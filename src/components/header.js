@@ -31,6 +31,24 @@ class Header extends React.Component {
     }
   }
 
+  // Stripe purchase logic
+  handlePurchase = (token) => {
+    const amount = 5000
+    const description = "Design goodies"
+    const bodyObject = {
+      tokenId: token.id,
+      email: token.email,
+      name: token.name,
+      description,
+      amount
+    }
+
+    fetch('http://localhost:9000/stripe-charge', {
+      method: 'POST',
+      body: JSON.stringify(bodyObject)
+    })
+  }
+
   render() {
     return (
       <div className={this.state.hasScrolled ? 'Header HeaderScrolled' : 'Header'}>
@@ -39,9 +57,13 @@ class Header extends React.Component {
           <Link to="/courses">Courses</Link>
           <Link to="/downloads">Downloads</Link>
           <Link to="/workshops">Workshops</Link>
+          {/* Need this as it's a stateful React component */}
           <StripeCheckout
             amount={5000}
-            image="https://drh2acu5z204m.cloudfront.net/items/0U2H3c3u2J3W1f140q1J/logo_iggyigner.png">
+            image="https://drh2acu5z204m.cloudfront.net/items/0U2H3c3u2J3W1f140q1J/logo_iggyigner.png"
+            token={this.handlePurchase}
+            stripeKey={'pk_live_clFiAWkchCibKzZDoUriFtCi'}
+            >
             <button>Buy</button>
           </StripeCheckout>
         </div>
